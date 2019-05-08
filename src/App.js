@@ -1,7 +1,11 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, createContext, useContext} from 'react';
 import Counter from './Counter'
 import Form from './Form'
 import ActiveButton from './ActiveButton'
+import Child from './Child'
+
+export const NameContext = createContext()
+
 
 const App = () => {
   const [activated, setActivated]= useState(false)
@@ -28,7 +32,7 @@ const App = () => {
      return setColor(nextColor)
   }
 
-  
+
 // const handleCityChange = (event) =>{
 //   setAddress({
 //     ...address, city: event.target.value
@@ -40,6 +44,27 @@ const App = () => {
 //     ...address, country: event.target.value
 //   })
 //   }
+
+
+//useEffect with user input/keydown event
+const [userText, setUserText] = useState('')
+  const handleUserKeyPress = event => {
+    const {key, keyCode} = event
+    if (keyCode === 32 || (keyCode >= 65 && keyCode <=90)) {
+     setUserText(`${userText}${key}`)
+    }
+  }
+  
+  useEffect(()=>{
+    window.addEventListener('keydown', handleUserKeyPress)
+    return ()=>{
+      window.removeEventListener('keydown', handleUserKeyPress)
+    }
+  })
+
+  const [name, setName] = useState({
+    name: "Billy Shakespere",
+})
 
 
   return (
@@ -78,6 +103,15 @@ const App = () => {
       handleCountryChange={handleCountryChange}
       />
       
+      <div>
+        <h1>Feel free to type. Your text will show up below!</h1>
+        <blockquote>{userText}</blockquote>
+      </div>
+
+      <NameContext.Provider value={name}>
+          <Child/> 
+      </NameContext.Provider>
+
     </div>
   );
 }
