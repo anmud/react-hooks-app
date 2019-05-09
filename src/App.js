@@ -9,7 +9,7 @@ export const NameContext = createContext()
 
 const App = () => {
   const [activated, setActivated]= useState(false)
-  const [count, setCount] = useState(0)
+  //const [count, setCount] = useState(0)
   const [city, setCity] = useState('')
   const [country, setCountry] = useState('')
   // const [address, setAddress] = useState({
@@ -22,9 +22,9 @@ const App = () => {
 
   const buttonText = activated ? "Active" : "Inactive"
   const onClick = () => setActivated(!activated)
-  const increaseCount = ({count, setCount}) => setCount(count + 1)
-  const decreaseCount = ({count, setCount}) => setCount(count - 1)
-  const resetCount = ({count, setCount}) => setCount(0)
+  // const increaseCount = ({count, setCount}) => setCount(count + 1)
+  // const decreaseCount = ({count, setCount}) => setCount(count - 1)
+  // const resetCount = ({count, setCount}) => setCount(0)
   const handleCityChange = event => setCity(event.target.value)
   const handleCountryChange = event =>  setCountry(event.target.value)
   const handleColorChange = () => {
@@ -46,26 +46,29 @@ const App = () => {
 //   }
 
 
-//useEffect with user input/keydown event
-const [userText, setUserText] = useState('')
-  const handleUserKeyPress = event => {
-    const {key, keyCode} = event
-    if (keyCode === 32 || (keyCode >= 65 && keyCode <=90)) {
-     setUserText(`${userText}${key}`)
-    }
-  }
+// //useEffect with user input/keydown event
+// const [userText, setUserText] = useState('')
+//   const handleUserKeyPress = event => {
+//     const {key, keyCode} = event
+//     if (keyCode === 32 || (keyCode >= 65 && keyCode <=90)) {
+//      setUserText(`${userText}${key}`)
+//     }
+//   }
   
-  useEffect(()=>{
-    window.addEventListener('keydown', handleUserKeyPress)
-    return ()=>{
-      window.removeEventListener('keydown', handleUserKeyPress)
-    }
-  })
+//   useEffect(()=>{
+//     window.addEventListener('keydown', handleUserKeyPress)
+//     return ()=>{
+//       window.removeEventListener('keydown', handleUserKeyPress)
+//     }
+//   })
+ 
+const userText = useKeyPress('Once upon a time...')
 
   const [name, setName] = useState({
     name: "Billy Shakespere",
 })
 
+const {count, setCount, increaseCount, decreaseCount, resetCount} = useCounter(10)
 
   return (
     <div>
@@ -115,5 +118,40 @@ const [userText, setUserText] = useState('')
     </div>
   );
 }
+
+const  useKeyPress = (startingValue) => {
+const [userText, setUserText] = useState(startingValue)
+const handleUserKeyPress = event => {
+  const {key, keyCode} = event
+  if (keyCode === 32 || (keyCode >= 65 && keyCode <=90)) {
+   setUserText(`${userText}${key}`)
+  }
+}
+
+useEffect(()=>{
+  window.addEventListener('keydown', handleUserKeyPress)
+  return ()=>{
+    window.removeEventListener('keydown', handleUserKeyPress)
+  }
+})
+return userText
+}
+
+const useCounter = (startingValue) => {
+  const [count, setCount] = useState(startingValue)
+
+  const increaseCount = ({count, setCount}) => setCount(count + 1)
+  const decreaseCount = ({count, setCount}) => setCount(count - 1)
+  const resetCount = ({count, setCount}) => setCount(0)
+
+  return {
+    count,
+    setCount,
+    increaseCount,
+    decreaseCount,
+    resetCount
+}
+}
+
 
 export default App;
